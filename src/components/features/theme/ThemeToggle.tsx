@@ -12,12 +12,35 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+const subscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 /**
  * ThemeToggle molecule component.
  * Allows users to switch between light, dark, and system themes.
  */
 export function ThemeToggle() {
   const { setTheme } = useTheme();
+  const mounted = React.useSyncExternalStore(
+    subscribe,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
+
+  if (!mounted) {
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        className="cursor-pointer"
+        disabled
+        aria-label="Toggle theme"
+      >
+        <Sun className="h-[1.2rem] w-[1.2rem] opacity-0" />
+      </Button>
+    );
+  }
 
   return (
     <DropdownMenu>

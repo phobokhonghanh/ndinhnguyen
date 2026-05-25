@@ -21,6 +21,8 @@ const SOCIAL_LINKS = [
   },
 ];
 
+const COPYRIGHT_YEAR = 2026;
+
 export function Footer() {
   return (
     <footer className="w-full py-6 mt-auto border-t bg-background/50 backdrop-blur-sm">
@@ -47,7 +49,7 @@ export function Footer() {
           ))}
         </div>
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Nguyen Dinh Nguyen
+          © {COPYRIGHT_YEAR} Nguyen Dinh Nguyen
         </p>
       </div>
     </footer>

@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import url('tailwindcss');
+@import url('tw-animate-css');
+@import url('shadcn/tailwind.css');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -129,4 +129,48 @@
   html {
     @apply font-sans;
   }
+}
+
+/* === Experience Page Theme === */
+.experience-page {
+  --experience-bg: rgb(248 250 252);
+  --experience-surface: rgb(255 255 255 / 86%);
+  --experience-surface-hover: rgb(255 255 255 / 96%);
+  --experience-border: rgb(203 213 225 / 75%);
+  --experience-text: rgb(15 23 42);
+  --experience-heading: rgb(2 6 23);
+  --experience-muted: rgb(71 85 105);
+  --experience-subtle: rgb(100 116 139);
+  --experience-icon-bg: rgb(226 232 240 / 72%);
+  --experience-nav-bg: rgb(255 255 255 / 78%);
+  --experience-nav-border: rgb(226 232 240);
+  --experience-accent: rgb(37 99 235);
+  --experience-accent-hover: rgb(29 78 216);
+  --experience-accent-muted: rgb(37 99 235 / 10%);
+  --experience-accent-border: rgb(37 99 235 / 35%);
+  --experience-accent-glow: rgb(37 99 235 / 28%);
+  --experience-button-text: rgb(255 255 255);
+
+  background-color: var(--experience-bg);
+  color: var(--experience-text);
+}
+
+.dark .experience-page {
+  --experience-bg: #000;
+  --experience-surface: rgb(15 23 42 / 40%);
+  --experience-surface-hover: rgb(30 41 59 / 60%);
+  --experience-border: rgb(51 65 85 / 50%);
+  --experience-text: rgb(203 213 225);
+  --experience-heading: rgb(255 255 255);
+  --experience-muted: rgb(148 163 184);
+  --experience-subtle: rgb(100 116 139);
+  --experience-icon-bg: rgb(30 41 59);
+  --experience-nav-bg: rgb(10 10 10 / 70%);
+  --experience-nav-border: rgb(38 38 38);
+  --experience-accent: rgb(96 165 250);
+  --experience-accent-hover: rgb(147 197 253);
+  --experience-accent-muted: rgb(59 130 246 / 10%);
+  --experience-accent-border: rgb(59 130 246 / 50%);
+  --experience-accent-glow: rgb(59 130 246 / 50%);
+  --experience-button-text: rgb(0 0 0);
 }
