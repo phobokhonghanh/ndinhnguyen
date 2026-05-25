@@ -4,12 +4,13 @@
   "private": true,
   "packageManager": "yarn@4.9.2",
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS=--max-old-space-size=4096 next dev --webpack",
+    "dev:turbo": "next dev --turbopack",
     "build": "next build --webpack",
     "start": "next start",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "lint": "next lint",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "depcheck": "depcheck",
     "prepare": "husky"

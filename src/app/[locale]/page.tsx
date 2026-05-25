@@ -55,7 +55,7 @@ export default async function IndexPage({
             <InfoBox
               title={t('experience')}
               description={t('experience_desc')}
-              href="#"
+              href="/experience"
               className="h-full"
             />
             <InfoBox
