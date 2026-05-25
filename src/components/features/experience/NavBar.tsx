@@ -21,10 +21,8 @@ export function NavBar() {
         {/* Left: Nav links */}
         <ul className="hidden sm:flex items-center gap-6">
           {NAV_LINK_KEYS.map(({ key, href }) => {
-            const isActive =
-              (href === '/experience' && pathname === '/experience') ||
-              (href === '/' && pathname === '/');
             const isDisabled = href === '#';
+            const isActive = !isDisabled && pathname === href;
 
             if (isDisabled) {
               return (

@@ -4,11 +4,21 @@
   "compatibility_date": "2026-04-28",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "main": ".open-next/worker.js",
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  }
+    "binding": "ASSETS",
+  },
+  // Replace database_name/database_id with the output of:
+  // wrangler d1 create <your-bookmarks-database-name>
+  "d1_databases": [
+    {
+      "binding": "BOOKMARKS_DB",
+      "database_name": "<BOOKMARKS_D1_DATABASE_NAME>",
+      "database_id": "<BOOKMARKS_D1_DATABASE_ID>",
+      "migrations_dir": "migrations",
+    },
+  ],
 }

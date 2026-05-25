@@ -7,6 +7,7 @@ import { Providers } from '@/components/providers/Providers';
 import { Footer } from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
 import { Geist, Geist_Mono, Inter } from 'next/font/google';
+import { APP_TIME_ZONE } from '@/lib/runtime-config';
 import '@/app/globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -58,7 +59,7 @@ export default async function LocaleLayout({
           geistMono.variable,
         )}
       >
-        <Providers locale={locale} messages={messages}>
+        <Providers locale={locale} messages={messages} timeZone={APP_TIME_ZONE}>
           <div className="relative flex min-h-screen flex-col">
             <div className="flex-1">{children}</div>
             <Footer />

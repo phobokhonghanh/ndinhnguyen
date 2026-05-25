@@ -62,6 +62,15 @@ Tài liệu này là nơi tập trung bối cảnh dự án, cấu hình, lệnh
   - `NEXT_PUBLIC_GA_ID`
   - `NEXT_PUBLIC_GTM_ID`
   - `NEXT_PUBLIC_CLARITY_ID`
+- App runtime env:
+  - `APP_TIME_ZONE`: múi giờ mặc định cho `next-intl`, mặc định là `Asia/Ho_Chi_Minh`.
+- Bookmark dashboard env/runtime config:
+  - `BOOKMARK_ADMIN_TOKEN`: token quản trị dùng để thêm/sửa/xóa bookmark và danh mục.
+  - `BOOKMARKS_DB`: Cloudflare D1 binding name được app đọc qua `getCloudflareContext`.
+  - Trang bookmark chặn toàn bộ dashboard bằng token trước khi tải dữ liệu; client chỉ lưu token trong `localStorage`.
+  - Màu bookmark kế thừa từ `categories.color`, được chọn bằng preset cố định trong UI.
+  - Tạo D1 database bằng `wrangler d1 create <database-name>`, sau đó cập nhật `database_name` và `database_id` trong `wrangler.jsonc`.
+  - Migration D1 nằm trong `migrations/`; chạy local bằng `wrangler d1 migrations apply <database-name> --local` và remote bằng `wrangler d1 migrations apply <database-name> --remote`.
 
 ## 5. Lệnh Vận Hành
 

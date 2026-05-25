@@ -7,10 +7,12 @@ export function Providers({
   children,
   messages,
   locale,
+  timeZone,
 }: {
   children: React.ReactNode;
   messages: AbstractIntlMessages;
   locale: string;
+  timeZone: string;
 }) {
   return (
     <NextThemesProvider
@@ -19,7 +21,11 @@ export function Providers({
       enableSystem
       disableTransitionOnChange
     >
-      <NextIntlClientProvider locale={locale} messages={messages}>
+      <NextIntlClientProvider
+        locale={locale}
+        messages={messages}
+        timeZone={timeZone}
+      >
         {children}
       </NextIntlClientProvider>
     </NextThemesProvider>

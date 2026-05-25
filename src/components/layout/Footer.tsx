@@ -1,6 +1,8 @@
 'use client';
 
 import { Github, Linkedin, Mail } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 
 const SOCIAL_LINKS = [
@@ -24,9 +26,27 @@ const SOCIAL_LINKS = [
 const COPYRIGHT_YEAR = 2026;
 
 export function Footer() {
+  const t = useTranslations('common');
+
   return (
     <footer className="w-full py-6 mt-auto border-t bg-background/50 backdrop-blur-sm">
       <div className="container mx-auto flex flex-col items-center justify-center gap-4 px-4">
+        <nav
+          aria-label={t('footer_resources')}
+          className="flex flex-col items-center gap-2"
+        >
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t('footer_resources')}
+          </h2>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/bookmarks">/bookmarks</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/experience">/exp</Link>
+            </Button>
+          </div>
+        </nav>
         <div className="flex items-center gap-2">
           {SOCIAL_LINKS.map((link) => (
             <Button
