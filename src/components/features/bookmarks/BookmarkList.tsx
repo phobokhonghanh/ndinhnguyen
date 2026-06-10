@@ -26,13 +26,13 @@ export function BookmarkList({
   onDelete,
 }: BookmarkListProps) {
   return (
-    <div className="overflow-hidden rounded-lg border bg-card shadow-sm transition-all duration-200 hover:shadow-md">
+    <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
       <div className="flex items-center justify-between border-b px-4 py-3">
-        <h2 className="flex items-center gap-2 text-sm font-semibold uppercase text-muted-foreground">
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
           <BookmarkIcon className="h-4 w-4" />
           {labels.bookmarks}
         </h2>
-        <span className="text-xs text-muted-foreground">
+        <span className="rounded-md border bg-background px-2 py-1 text-xs text-muted-foreground">
           {bookmarks.length}
         </span>
       </div>
@@ -49,7 +49,7 @@ export function BookmarkList({
             return (
               <li
                 key={bookmark.id}
-                className="grid gap-3 border-l-4 px-4 py-4 transition-all duration-200 hover:shadow-sm hover:ring-1 hover:ring-border/70 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+                className="grid gap-3 border-l-4 bg-background px-4 py-4 transition-colors hover:bg-muted/30 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
                 style={{
                   borderLeftColor: color.foreground,
                   backgroundColor: color.background,
@@ -57,11 +57,11 @@ export function BookmarkList({
               >
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="truncate text-base font-semibold">
+                    <h3 className="truncate text-base font-semibold tracking-tight">
                       {bookmark.title}
                     </h3>
                     <span
-                      className="rounded-full border px-2 py-0.5 text-xs"
+                      className="rounded-md border px-2 py-0.5 text-xs font-medium"
                       style={{
                         borderColor: color.border,
                         color: color.foreground,

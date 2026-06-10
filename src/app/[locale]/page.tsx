@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/card';
 import { InfoBox } from '@/components/ui/info-box';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Enhanced IndexPage using standardized components.
  * Follows Atomic Design for scalability.

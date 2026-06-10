@@ -24,8 +24,8 @@ export function CategoryCards({
   }
 
   return (
-    <div className="rounded-lg border bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md">
-      <h2 className="mb-3 text-sm font-semibold uppercase text-muted-foreground">
+    <div className="rounded-lg border bg-card/95 p-4 shadow-sm backdrop-blur">
+      <h2 className="mb-3 text-sm font-semibold text-foreground">
         {labels.categories}
       </h2>
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -35,7 +35,7 @@ export function CategoryCards({
           return (
             <div
               key={category.id}
-              className="flex min-w-0 items-center justify-between gap-2 rounded-md border px-3 py-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+              className="flex min-w-0 items-center justify-between gap-2 rounded-md border px-3 py-2 transition-all duration-200 hover:bg-background/70"
               style={{
                 borderColor: color.border,
                 backgroundColor: color.background,

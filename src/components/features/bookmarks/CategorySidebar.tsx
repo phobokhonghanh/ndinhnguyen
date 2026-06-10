@@ -1,6 +1,13 @@
 'use client';
 
-import { ChevronRight, Folder, FolderOpen, FolderPlus } from 'lucide-react';
+import {
+  ChevronRight,
+  Edit3,
+  Folder,
+  FolderOpen,
+  FolderPlus,
+  Trash2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   getCategoryColorPreset,
@@ -15,6 +22,8 @@ interface CategorySidebarProps {
   labels: BookmarkDashboardLabels;
   onSelect: (categoryId: string) => void;
   onCreateCategory: () => void;
+  onEdit: (category: CategoryTreeNode) => void;
+  onDelete: (categoryId: string) => void;
 }
 
 function CategoryDot({ color }: { color: CategoryColorId }) {
@@ -34,6 +43,8 @@ export function CategorySidebar({
   labels,
   onSelect,
   onCreateCategory,
+  onEdit,
+  onDelete,
 }: CategorySidebarProps) {
   const renderNode = (node: CategoryTreeNode) => {
     const isSelected = selectedCategoryId === node.id;
@@ -43,42 +54,70 @@ export function CategorySidebar({
 
     return (
       <li key={node.id} className="relative pl-3">
-        <span className="absolute left-0 top-0 h-full w-px bg-border" />
-        <span className="absolute left-0 top-5 h-px w-3 bg-border" />
-        <button
-          type="button"
-          onClick={() => onSelect(node.id)}
-          className={`group flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 text-left text-sm outline-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring ${
+        <span className="absolute left-0 top-0 h-full w-px bg-border/80" />
+        <span className="absolute left-0 top-5 h-px w-3 bg-border/80" />
+        <div
+          className={`group flex items-center gap-1 rounded-md transition-colors ${
             isSelected
-              ? 'bg-primary text-primary-foreground'
+              ? 'bg-foreground text-background shadow-sm'
               : 'text-foreground hover:bg-muted/80'
           }`}
         >
-          <span className="flex min-w-0 items-center gap-2">
-            <ChevronRight
-              className={`h-3.5 w-3.5 shrink-0 transition-transform ${
-                hasChildren ? 'rotate-90 opacity-80' : 'opacity-20'
-              }`}
-            />
-            <FolderIcon
-              className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110"
-              style={{ color: isSelected ? undefined : color.foreground }}
-            />
-            <CategoryDot color={node.color} />
-            <span className="truncate">{node.name}</span>
-          </span>
-          {hasChildren && (
-            <span
-              className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                isSelected
-                  ? 'bg-primary-foreground/20 text-primary-foreground'
-                  : 'bg-muted text-muted-foreground'
-              }`}
-            >
-              {node.children.length}
+          <button
+            type="button"
+            onClick={() => onSelect(node.id)}
+            className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-md px-3 py-2 text-left text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <span className="flex min-w-0 items-center gap-2">
+              <ChevronRight
+                className={`h-3.5 w-3.5 shrink-0 transition-transform ${
+                  hasChildren ? 'rotate-90 opacity-80' : 'opacity-20'
+                }`}
+              />
+              <FolderIcon
+                className="h-4 w-4 shrink-0"
+                style={{ color: isSelected ? undefined : color.foreground }}
+              />
+              <CategoryDot color={node.color} />
+              <span className="truncate">{node.name}</span>
             </span>
-          )}
-        </button>
+            {hasChildren && (
+              <span
+                className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                  isSelected
+                    ? 'bg-background/20 text-background'
+                    : 'bg-muted text-muted-foreground'
+                }`}
+              >
+                {node.children.length}
+              </span>
+            )}
+          </button>
+          <div className="flex shrink-0 items-center pr-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+            <button
+              type="button"
+              className={`rounded-md p-1 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
+                isSelected ? 'hover:bg-background/20' : 'hover:bg-background'
+              }`}
+              title={labels.edit}
+              onClick={() => onEdit(node)}
+            >
+              <Edit3 className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              className={`rounded-md p-1 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
+                isSelected
+                  ? 'text-background hover:bg-background/20'
+                  : 'text-destructive hover:bg-destructive/10'
+              }`}
+              title={labels.delete}
+              onClick={() => onDelete(node.id)}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
         {hasChildren && (
           <ul className="ml-4 mt-1 space-y-1">
             {node.children.map((child) => renderNode(child))}
@@ -89,11 +128,14 @@ export function CategorySidebar({
   };
 
   return (
-    <aside className="rounded-lg border bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md">
+    <aside className="rounded-lg border bg-card/95 p-4 shadow-sm backdrop-blur lg:sticky lg:top-5">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold uppercase text-muted-foreground">
-          {labels.categories}
-        </h2>
+        <div>
+          <p className="text-xs font-medium uppercase text-muted-foreground">
+            {labels.activeFilters}
+          </p>
+          <h2 className="text-base font-semibold">{labels.categories}</h2>
+        </div>
         <Button
           type="button"
           variant="outline"
@@ -107,10 +149,10 @@ export function CategorySidebar({
       <button
         type="button"
         onClick={() => onSelect('')}
-        className={`mb-3 flex w-full items-center rounded-md px-3 py-2 text-left text-sm outline-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring ${
+        className={`mb-3 flex w-full items-center rounded-md px-3 py-2 text-left text-sm outline-none transition-all duration-200 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring ${
           selectedCategoryId
             ? 'text-foreground hover:bg-muted/80'
-            : 'bg-primary text-primary-foreground'
+            : 'bg-foreground text-background shadow-sm'
         }`}
       >
         {labels.allCategories}

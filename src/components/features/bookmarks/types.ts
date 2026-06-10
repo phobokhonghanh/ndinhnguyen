@@ -16,6 +16,11 @@ export interface BookmarkDashboardLabels {
   allCategories: string;
   categories: string;
   bookmarks: string;
+  totalBookmarks: string;
+  totalCategories: string;
+  activeFilters: string;
+  editingBookmark: string;
+  editingCategory: string;
   addCategory: string;
   addBookmark: string;
   edit: string;

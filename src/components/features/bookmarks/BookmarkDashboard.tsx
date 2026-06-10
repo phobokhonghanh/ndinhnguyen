@@ -18,13 +18,11 @@ import type {
   Bookmark,
   BookmarkActionResult,
   BookmarkDashboardData,
-  Category,
 } from '@/lib/bookmarks/types';
 import { BookmarkAuthDialog } from './BookmarkAuthDialog';
 import { BookmarkForms } from './BookmarkForms';
 import { BookmarkList } from './BookmarkList';
 import { BookmarkToolbar } from './BookmarkToolbar';
-import { CategoryCards } from './CategoryCards';
 import { CategorySidebar } from './CategorySidebar';
 import type { BookmarkDashboardLabels, PanelMode } from './types';
 
@@ -254,6 +252,9 @@ export function BookmarkDashboard({
     );
   };
 
+  const activeFilterCount =
+    (filters.query ? 1 : 0) + (filters.categoryId ? 1 : 0);
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {hasHydrated && !data && (
@@ -271,46 +272,53 @@ export function BookmarkDashboard({
         }`}
         aria-hidden={!data}
       >
-        <header className="flex flex-col gap-4 border-b pb-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              {labels.title}
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              {labels.subtitle}
-            </p>
-          </div>
+        <header className="rounded-lg border bg-card px-5 py-4 shadow-sm lg:px-6">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div className="min-w-0">
+              <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                {labels.title}
+              </h1>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+                {labels.subtitle}
+              </p>
+              {data && (
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                  <span>
+                    {labels.totalBookmarks}: {data.bookmarks.length}
+                  </span>
+                  <span>
+                    {labels.totalCategories}: {data.categories.length}
+                  </span>
+                  <span>
+                    {labels.activeFilters}: {activeFilterCount}
+                  </span>
+                </div>
+              )}
+            </div>
 
-          {data && (
-            <Button type="button" variant="outline" onClick={logout}>
-              <LogOut className="h-4 w-4" />
-              {labels.logout}
-            </Button>
-          )}
+            {data && (
+              <Button type="button" variant="outline" onClick={logout}>
+                <LogOut className="h-4 w-4" />
+                {labels.logout}
+              </Button>
+            )}
+          </div>
         </header>
 
         {data && !data.dbReady && (
-          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive shadow-sm">
             {labels.dbUnavailable}
           </div>
         )}
 
         {data && message && (
-          <div className="rounded-md border bg-card px-4 py-3 text-sm text-card-foreground shadow-sm">
+          <div className="rounded-lg border bg-card px-4 py-3 text-sm text-card-foreground shadow-sm">
             {message}
           </div>
         )}
 
         {data && (
-          <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-            <CategorySidebar
-              nodes={data.categoryTree}
-              selectedCategoryId={filters.categoryId}
-              labels={labels}
-              onSelect={(categoryId) => updateFilters({ categoryId })}
-              onCreateCategory={() => setPanelMode({ type: 'category' })}
-            />
-
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
             <section className="min-w-0 space-y-5">
               <BookmarkToolbar
                 query={filters.query}
@@ -343,18 +351,21 @@ export function BookmarkDashboard({
                   deleteWithAction(bookmarkId, deleteBookmarkAction)
                 }
               />
-
-              <CategoryCards
-                categories={data.categories}
-                labels={labels}
-                onEdit={(category: Category) =>
-                  setPanelMode({ type: 'category', category })
-                }
-                onDelete={(categoryId) =>
-                  deleteWithAction(categoryId, deleteCategoryAction)
-                }
-              />
             </section>
+
+            <CategorySidebar
+              nodes={data.categoryTree}
+              selectedCategoryId={filters.categoryId}
+              labels={labels}
+              onSelect={(categoryId) => updateFilters({ categoryId })}
+              onCreateCategory={() => setPanelMode({ type: 'category' })}
+              onEdit={(category) =>
+                setPanelMode({ type: 'category', category })
+              }
+              onDelete={(categoryId) =>
+                deleteWithAction(categoryId, deleteCategoryAction)
+              }
+            />
           </div>
         )}
       </section>

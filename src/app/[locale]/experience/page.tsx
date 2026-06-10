@@ -4,6 +4,8 @@ import { HeroSection } from '@/components/features/experience/HeroSection';
 import { TechStackSection } from '@/components/features/experience/TechStackSection';
 import { ExperienceSection } from '@/components/features/experience/ExperienceSection';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({
   params,
 }: {

@@ -38,7 +38,8 @@ Tài liệu này là nơi tập trung bối cảnh dự án, cấu hình, lệnh
 ├── docs/
 │   ├── dev.md                # Tài liệu phát triển và vận hành
 │   ├── rule.md               # Quy tắc AI/coding
-│   └── fix.md                # Log/ghi chú lỗi hydration
+│   ├── fix.md                # Log/ghi chú lỗi hydration
+│   └── deploy_r2.md          # Hướng dẫn deploy Cloudflare Workers và D1
 ├── AGENTS.md                 # Cổng vào ngữ cảnh, trỏ sang docs/rule.md và docs/dev.md
 ├── public/                   # Static assets
 ├── infra/                    # Cấu hình hạ tầng bổ sung
@@ -65,7 +66,7 @@ Tài liệu này là nơi tập trung bối cảnh dự án, cấu hình, lệnh
 - App runtime env:
   - `APP_TIME_ZONE`: múi giờ mặc định cho `next-intl`, mặc định là `Asia/Ho_Chi_Minh`.
 - Bookmark dashboard env/runtime config:
-  - `BOOKMARK_ADMIN_TOKEN`: token quản trị dùng để thêm/sửa/xóa bookmark và danh mục.
+  - `ADMIN_TOKEN`: token quản trị dùng để thêm/sửa/xóa bookmark và danh mục.
   - `BOOKMARKS_DB`: Cloudflare D1 binding name được app đọc qua `getCloudflareContext`.
   - Trang bookmark chặn toàn bộ dashboard bằng token trước khi tải dữ liệu; client chỉ lưu token trong `localStorage`.
   - Màu bookmark kế thừa từ `categories.color`, được chọn bằng preset cố định trong UI.
@@ -106,6 +107,7 @@ OpenNext Cloudflare:
 
 ```bash
 yarn preview
+yarn deploy:dry-run
 yarn deploy
 ```
 

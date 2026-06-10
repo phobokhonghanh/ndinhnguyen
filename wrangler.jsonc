@@ -11,13 +11,11 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS",
   },
-  // Replace database_name/database_id with the output of:
-  // wrangler d1 create <your-bookmarks-database-name>
   "d1_databases": [
     {
       "binding": "BOOKMARKS_DB",
-      "database_name": "<BOOKMARKS_D1_DATABASE_NAME>",
-      "database_id": "<BOOKMARKS_D1_DATABASE_ID>",
+      "database_name": "skill",
+      "database_id": "46ef5404-0408-43af-95dc-cd664f8629cd",
       "migrations_dir": "migrations",
     },
   ],

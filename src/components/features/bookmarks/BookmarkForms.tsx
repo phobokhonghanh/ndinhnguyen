@@ -55,7 +55,7 @@ function CategoryColorPicker({
           return (
             <label
               key={preset.id}
-              className="flex cursor-pointer items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/10"
+              className="flex cursor-pointer items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm transition-colors has-[:checked]:border-foreground has-[:checked]:bg-foreground has-[:checked]:text-background"
             >
               <input
                 type="radio"
@@ -88,7 +88,13 @@ export function BookmarkForms({
 }: BookmarkFormsProps) {
   if (panelMode.type === 'bookmark') {
     return (
-      <div className="rounded-lg border bg-card p-4 shadow-sm">
+      <div className="rounded-lg border bg-muted/25 p-4">
+        <div className="mb-4 border-b pb-3">
+          <p className="text-sm font-semibold">{labels.editingBookmark}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {labels.descriptionOptional}
+          </p>
+        </div>
         <form
           className="grid gap-3 md:grid-cols-2"
           onSubmit={(event) => {
@@ -141,7 +147,7 @@ export function BookmarkForms({
             </select>
           </label>
           <div className="flex items-end gap-2">
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="shadow-sm">
               {labels.save}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
@@ -158,7 +164,13 @@ export function BookmarkForms({
     getCategoryColorPreset(DEFAULT_CATEGORY_COLOR).id;
 
   return (
-    <div className="rounded-lg border bg-card p-4 shadow-sm">
+    <div className="rounded-lg border bg-muted/25 p-4">
+      <div className="mb-4 border-b pb-3">
+        <p className="text-sm font-semibold">{labels.editingCategory}</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {labels.parentCategory}
+        </p>
+      </div>
       <form
         className="grid gap-3 md:grid-cols-2"
         onSubmit={(event) => {
@@ -192,7 +204,7 @@ export function BookmarkForms({
         </label>
         <CategoryColorPicker defaultColor={defaultColor} labels={labels} />
         <div className="flex items-end gap-2 md:col-span-2">
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="shadow-sm">
             {labels.save}
           </Button>
           <Button type="button" variant="outline" onClick={onCancel}>
