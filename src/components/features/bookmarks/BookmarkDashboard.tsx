@@ -2,18 +2,17 @@
 
 import * as React from 'react';
 import { LogOut } from 'lucide-react';
-import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import {
-  createBookmarkAction,
-  createCategoryAction,
-  deleteBookmarkAction,
-  deleteCategoryAction,
-  loadBookmarkDashboardAction,
-  updateBookmarkAction,
-  updateCategoryAction,
-} from '@/app/[locale]/bookmarks/actions';
-import { BOOKMARK_TOKEN_STORAGE_KEY } from '@/lib/bookmarks/auth';
+  createBookmark,
+  createCategory,
+  deleteBookmark,
+  deleteCategory,
+  loadBookmarkDashboard,
+  updateBookmark,
+  updateCategory,
+} from '@/lib/bookmarks/api';
+import { BOOKMARK_TOKEN_STORAGE_KEY } from '@/lib/bookmarks/constants';
 import type {
   Bookmark,
   BookmarkActionResult,
@@ -27,9 +26,6 @@ import { CategorySidebar } from './CategorySidebar';
 import type { BookmarkDashboardLabels, PanelMode } from './types';
 
 interface BookmarkDashboardProps {
-  locale: string;
-  query: string;
-  selectedCategoryId: string;
   labels: BookmarkDashboardLabels;
 }
 
@@ -41,41 +37,39 @@ interface BookmarkFiltersState {
 const subscribeHydration = () => () => {};
 const getClientHydrationSnapshot = () => true;
 const getServerHydrationSnapshot = () => false;
+const getInitialFilters = (): BookmarkFiltersState => {
+  if (typeof window === 'undefined') {
+    return {
+      query: '',
+      categoryId: '',
+    };
+  }
 
-const createActionFormData = (
-  source: HTMLFormElement,
-  locale: string,
-  token: string,
-): FormData => {
-  const formData = new FormData(source);
-  formData.set('locale', locale);
-  formData.set('token', token);
-  return formData;
+  const params = new URLSearchParams(window.location.search);
+
+  return {
+    query: params.get('q') ?? '',
+    categoryId: params.get('category') ?? '',
+  };
 };
 
 export function BookmarkDashboard({
-  locale,
-  query,
-  selectedCategoryId,
   labels,
 }: BookmarkDashboardProps) {
-  const router = useRouter();
   const hasHydrated = React.useSyncExternalStore(
     subscribeHydration,
     getClientHydrationSnapshot,
     getServerHydrationSnapshot,
   );
   const [token, setToken] = React.useState('');
-  const [filters, setFilters] = React.useState<BookmarkFiltersState>({
-    query,
-    categoryId: selectedCategoryId,
-  });
+  const [filters, setFilters] = React.useState<BookmarkFiltersState>(
+    getInitialFilters,
+  );
   const [data, setData] = React.useState<BookmarkDashboardData | null>(null);
   const [panelMode, setPanelMode] = React.useState<PanelMode>(null);
   const [message, setMessage] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
-  const initialFiltersRef = React.useRef(filters);
 
   const updateUrl = React.useCallback(
     (nextFilters: BookmarkFiltersState) => {
@@ -90,9 +84,13 @@ export function BookmarkDashboard({
       }
 
       const suffix = params.toString() ? `?${params.toString()}` : '';
-      router.replace(`/bookmarks${suffix}`);
+      window.history.replaceState(
+        null,
+        '',
+        `${window.location.pathname}${suffix}`,
+      );
     },
-    [router],
+    [],
   );
 
   const loadDashboard = React.useCallback(
@@ -102,7 +100,7 @@ export function BookmarkDashboard({
       options: { persistToken?: boolean; showError?: boolean } = {},
     ) => {
       setIsLoading(true);
-      const result = await loadBookmarkDashboardAction({
+      const result = await loadBookmarkDashboard({
         token: nextToken,
         query: nextFilters.query,
         categoryId: nextFilters.categoryId,
@@ -145,10 +143,16 @@ export function BookmarkDashboard({
       return;
     }
 
-    void loadDashboard(storedToken, initialFiltersRef.current, {
-      showError: false,
-    });
-  }, [hasHydrated, loadDashboard]);
+    const timer = window.setTimeout(() => {
+      void loadDashboard(storedToken, filters, {
+        showError: false,
+      });
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [hasHydrated, loadDashboard, filters]);
 
   const updateFilters = (next: Partial<BookmarkFiltersState>) => {
     const nextFilters = {
@@ -166,7 +170,10 @@ export function BookmarkDashboard({
 
   const runMutation = (
     form: HTMLFormElement,
-    action: (formData: FormData) => Promise<BookmarkActionResult>,
+    action: (
+      token: string,
+      formData: FormData,
+    ) => Promise<BookmarkActionResult>,
   ) => {
     if (!token) {
       setMessage(labels.tokenRequired);
@@ -174,7 +181,7 @@ export function BookmarkDashboard({
     }
 
     startTransition(async () => {
-      const result = await action(createActionFormData(form, locale, token));
+      const result = await action(token, new FormData(form));
       setMessage(labels.actionMessages[result.code]);
 
       if (result.ok) {
@@ -187,7 +194,7 @@ export function BookmarkDashboard({
 
   const deleteWithAction = (
     id: string,
-    action: (formData: FormData) => Promise<BookmarkActionResult>,
+    action: (token: string, id: string) => Promise<BookmarkActionResult>,
   ) => {
     if (!token) {
       setMessage(labels.tokenRequired);
@@ -198,13 +205,8 @@ export function BookmarkDashboard({
       return;
     }
 
-    const formData = new FormData();
-    formData.set('id', id);
-    formData.set('locale', locale);
-    formData.set('token', token);
-
     startTransition(async () => {
-      const result = await action(formData);
+      const result = await action(token, id);
       setMessage(labels.actionMessages[result.code]);
 
       if (result.ok) {
@@ -241,14 +243,14 @@ export function BookmarkDashboard({
     if (panelMode.type === 'bookmark') {
       runMutation(
         form,
-        panelMode.bookmark ? updateBookmarkAction : createBookmarkAction,
+        panelMode.bookmark ? updateBookmark : createBookmark,
       );
       return;
     }
 
     runMutation(
       form,
-      panelMode.category ? updateCategoryAction : createCategoryAction,
+      panelMode.category ? updateCategory : createCategory,
     );
   };
 
@@ -348,7 +350,7 @@ export function BookmarkDashboard({
                   setPanelMode({ type: 'bookmark', bookmark })
                 }
                 onDelete={(bookmarkId) =>
-                  deleteWithAction(bookmarkId, deleteBookmarkAction)
+                  deleteWithAction(bookmarkId, deleteBookmark)
                 }
               />
             </section>
@@ -363,7 +365,7 @@ export function BookmarkDashboard({
                 setPanelMode({ type: 'category', category })
               }
               onDelete={(categoryId) =>
-                deleteWithAction(categoryId, deleteCategoryAction)
+                deleteWithAction(categoryId, deleteCategory)
               }
             />
           </div>

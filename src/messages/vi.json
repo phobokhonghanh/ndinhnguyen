@@ -65,7 +65,7 @@
     "contact_email_label": "Email"
   },
   "bookmarks": {
-    "meta_title": "Bookmarks — Simple Skill",
+    "meta_title": "Bookmarks — Nguyen Dinh Nguyen",
     "meta_description": "Dashboard lưu, tìm kiếm, lọc và quản lý bookmark theo danh mục nhiều cấp.",
     "title": "Quản lý bookmark",
     "subtitle": "Lưu các liên kết hữu ích với tiêu đề, mô tả và danh mục nhiều cấp. Tìm kiếm nhanh, lọc theo chủ đề và quản lý trong một dashboard gọn gàng.",
@@ -93,7 +93,7 @@
     "token_placeholder": "Nhập token quản trị",
     "token_saved": "Đã lưu token quản trị trên trình duyệt này.",
     "token_required": "Hãy nhập token quản trị trước khi thay đổi dữ liệu.",
-    "db_unavailable": "Chưa kết nối được database bookmark. Kiểm tra D1 binding BOOKMARKS_DB.",
+    "db_unavailable": "Chưa kết nối được API bookmark. Hãy kiểm tra cấu hình API.",
     "empty_bookmarks": "Không có bookmark phù hợp với bộ lọc hiện tại.",
     "empty_categories": "Chưa có danh mục.",
     "category_name": "Tên danh mục",
@@ -122,7 +122,7 @@
     "action_bookmark_not_found": "Không tìm thấy bookmark.",
     "action_title_required": "Tiêu đề là bắt buộc.",
     "action_url_invalid": "Hãy nhập URL http hoặc https hợp lệ.",
-    "action_db_unavailable": "Chưa kết nối được database bookmark.",
+    "action_db_unavailable": "Chưa kết nối được API bookmark.",
     "action_unknown_error": "Có lỗi xảy ra khi lưu dữ liệu."
   }
 }

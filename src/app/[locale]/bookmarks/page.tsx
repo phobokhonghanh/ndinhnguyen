@@ -3,8 +3,6 @@ import { BookmarkDashboard } from '@/components/features/bookmarks/BookmarkDashb
 import { CATEGORY_COLOR_PRESETS } from '@/lib/bookmarks/colors';
 import type { BookmarkActionCode } from '@/lib/bookmarks/types';
 
-export const dynamic = 'force-dynamic';
-
 export async function generateMetadata({
   params,
 }: {
@@ -21,13 +19,10 @@ export async function generateMetadata({
 
 export default async function BookmarksPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string; category?: string }>;
 }) {
   const { locale } = await params;
-  const { q, category } = await searchParams;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'bookmarks' });
@@ -49,9 +44,6 @@ export default async function BookmarksPage({
 
   return (
     <BookmarkDashboard
-      locale={locale}
-      query={q ?? ''}
-      selectedCategoryId={category ?? ''}
       labels={{
         title: t('title'),
         subtitle: t('subtitle'),

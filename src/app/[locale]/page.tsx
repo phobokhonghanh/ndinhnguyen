@@ -10,8 +10,6 @@ import {
 } from '@/components/ui/card';
 import { InfoBox } from '@/components/ui/info-box';
 
-export const dynamic = 'force-dynamic';
-
 /**
  * Enhanced IndexPage using standardized components.
  * Follows Atomic Design for scalability.
@@ -68,16 +66,6 @@ export default async function IndexPage({
             />
           </div>
 
-          {/* Standardized Settings Grid */}
-          {/* <div className="grid grid-cols-2 gap-4">
-            <SettingBox label={t('language')}>
-              <LanguageSwitcher />
-            </SettingBox>
-
-            <SettingBox label={t('theme')}>
-              <ThemeToggle />
-            </SettingBox>
-          </div> */}
         </CardContent>
       </Card>
     </main>

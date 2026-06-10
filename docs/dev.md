@@ -15,7 +15,8 @@ Tài liệu này là nơi tập trung bối cảnh dự án, cấu hình, lệnh
 - **shadcn/ui**: UI primitives trong `src/components/ui`, cấu hình tại `components.json`.
 - **next-intl 4.9.1**: i18n App Router, cấu hình trong `src/i18n/`.
 - **next-themes**: Light/Dark/System theme qua providers.
-- **OpenNext Cloudflare**: build/preview/deploy Cloudflare qua `@opennextjs/cloudflare`.
+- **Cloudflare Pages**: deploy static export từ thư mục `out`.
+- **Python Worker API**: FastAPI + D1 được phát triển và deploy từ Git repository riêng.
 - **Analytics**: Google Analytics, Google Tag Manager và Microsoft Clarity qua biến môi trường public khi cần.
 
 ## 3. Cấu Trúc Dự Án
@@ -30,21 +31,16 @@ Tài liệu này là nơi tập trung bối cảnh dự án, cấu hình, lệnh
 │   │   ├── features/         # Components theo tính năng
 │   │   ├── layout/           # Layout components
 │   │   └── providers/        # Theme/app providers
-│   ├── hooks/                # Custom hooks
 │   ├── i18n/                 # next-intl routing/request config
 │   ├── lib/                  # Shared utilities
-│   ├── messages/             # en.json, vi.json
-│   └── proxy.ts              # Proxy/middleware entry theo cấu trúc Next.js hiện tại
+│   └── messages/             # en.json, vi.json
 ├── docs/
 │   ├── dev.md                # Tài liệu phát triển và vận hành
 │   ├── rule.md               # Quy tắc AI/coding
-│   ├── fix.md                # Log/ghi chú lỗi hydration
-│   └── deploy_r2.md          # Hướng dẫn deploy Cloudflare Workers và D1
+│   └── deploy.md             # Hướng dẫn deploy frontend và kết nối API
 ├── AGENTS.md                 # Cổng vào ngữ cảnh, trỏ sang docs/rule.md và docs/dev.md
 ├── public/                   # Static assets
-├── infra/                    # Cấu hình hạ tầng bổ sung
 ├── next.config.ts            # Next.js + next-intl plugin
-├── open-next.config.ts       # OpenNext Cloudflare config
 ├── eslint.config.mjs         # ESLint flat config
 ├── postcss.config.mjs        # PostCSS/Tailwind v4
 └── package.json              # Scripts và dependencies
@@ -64,14 +60,11 @@ Tài liệu này là nơi tập trung bối cảnh dự án, cấu hình, lệnh
   - `NEXT_PUBLIC_GTM_ID`
   - `NEXT_PUBLIC_CLARITY_ID`
 - App runtime env:
-  - `APP_TIME_ZONE`: múi giờ mặc định cho `next-intl`, mặc định là `Asia/Ho_Chi_Minh`.
-- Bookmark dashboard env/runtime config:
-  - `ADMIN_TOKEN`: token quản trị dùng để thêm/sửa/xóa bookmark và danh mục.
-  - `BOOKMARKS_DB`: Cloudflare D1 binding name được app đọc qua `getCloudflareContext`.
-  - Trang bookmark chặn toàn bộ dashboard bằng token trước khi tải dữ liệu; client chỉ lưu token trong `localStorage`.
-  - Màu bookmark kế thừa từ `categories.color`, được chọn bằng preset cố định trong UI.
-  - Tạo D1 database bằng `wrangler d1 create <database-name>`, sau đó cập nhật `database_name` và `database_id` trong `wrangler.jsonc`.
-  - Migration D1 nằm trong `migrations/`; chạy local bằng `wrangler d1 migrations apply <database-name> --local` và remote bằng `wrangler d1 migrations apply <database-name> --remote`.
+  - `APP_TIME_ZONE`: múi giờ build cho `next-intl`, mặc định là `Asia/Ho_Chi_Minh`.
+  - `NEXT_PUBLIC_API_URL`: URL public của Python Worker API.
+- Bookmark dashboard gọi REST API từ browser, lưu token trong `localStorage` và
+  gửi token qua `Authorization: Bearer`.
+- `ADMIN_TOKEN`, `BOOKMARKS_DB`, migration và D1 chỉ tồn tại trong repository backend, không thuộc repository này.
 
 ## 5. Lệnh Vận Hành
 
@@ -88,11 +81,10 @@ yarn dev
 yarn dev:turbo
 ```
 
-Build và start:
+Build static:
 
 ```bash
 yarn build
-yarn start
 ```
 
 Kiểm tra và định dạng:
@@ -103,13 +95,7 @@ yarn format
 yarn depcheck
 ```
 
-OpenNext Cloudflare:
-
-```bash
-yarn preview
-yarn deploy:dry-run
-yarn deploy
-```
+`yarn build` tạo static export trong `out` để Cloudflare Pages deploy.
 
 ## 6. Chất Lượng Code Và Tooling
 
@@ -120,7 +106,9 @@ yarn deploy
 - **Husky**: quản lý Git hooks.
 - **lint-staged**: chạy checks trên staged files trước commit.
 - **Commitlint**: kiểm tra commit message theo Conventional Commits.
-- Các thư mục build/cache như `.next/`, `.open-next/`, `.wrangler/`, `.yarn/` được ignore trong ESLint.
+- Các thư mục build/cache như `.next/`, `out/` và `.yarn/` được ignore.
+- `.yarnrc.yml` được giữ lại để bắt buộc Yarn dùng linker `node-modules`;
+  `yarn.lock` là lockfile duy nhất được commit.
 
 ## 7. Commit Workflow
 

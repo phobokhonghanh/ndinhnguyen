@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# Nguyen Dinh Nguyen
 
-First, run the development server:
+    <i>Personal Website &amp; Portfolio</i>
+
+    <p>
+        <img src="https://img.shields.io/badge/Next.js-16.2.4-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js" />
+        <img src="https://img.shields.io/badge/React-19.2.4-61DAFB?style=flat-square&logo=react&logoColor=0B1F2A" alt="React" />
+        <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+        <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+        <img src="https://img.shields.io/badge/Yarn-4.9.2-2C8EBB?style=flat-square&logo=yarn&logoColor=white" alt="Yarn" />
+        <img src="https://img.shields.io/badge/Cloudflare_Pages-F38020?style=flat-square&logo=cloudflarepages&logoColor=white" alt="Cloudflare Pages" />
+    </p>
+
+</div>
+
+---
+
+## Routes
+
+| Route                   | Type                     | Description                                                                                  |
+| ----------------------- | ------------------------ | -------------------------------------------------------------------------------------------- |
+| `/`                     | Redirect                 | Redirects to `/en/` on Cloudflare Pages using `_redirects`.                                  |
+| `/[locale]/`            | Static page              | Landing page with language switcher, theme toggle, and links to the main sections.           |
+| `/[locale]/bookmarks/`  | Static page + client API | Bookmark dashboard shell; the UI loads bookmark data from the Python Worker API after login. |
+| `/[locale]/experience/` | Static page              | Profile and experience page with hero, tech stack, and experience sections.                  |
+
+---
+
+## Development
 
 ```bash
-npm run dev
-# or
+cp .env.example .env.local
+yarn install
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Set `NEXT_PUBLIC_API_URL` to the Worker URL. Build the Pages artifact with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn lint
+yarn build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> Cloudflare Pages must publish the generated `out` directory. Deployment and
+> API integration are documented in [docs/deploy.md](docs/deploy.md).
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Route Check
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Static export was checked locally from `out` on `http://127.0.0.1:3001`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GET /[locale]/` -> `200 OK`, title `Nguyen Dinh Nguyen`
+- `GET /[locale]/bookmarks/` -> `200 OK`, title `Bookmarks — Nguyen Dinh Nguyen`
+- `GET /[locale]/experience/` -> `200 OK`, title `Experience — Nguyen Dinh Nguyen`
+- `GET /` is redirected to `/en/` in Cloudflare Pages via `public/_redirects`
