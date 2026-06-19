@@ -6,7 +6,6 @@ import type {
 import type { CategoryColorId } from '@/lib/bookmarks/colors';
 
 export interface BookmarkDashboardLabels {
-  title: string;
   subtitle: string;
   loginTitle: string;
   loginSubtitle: string;
@@ -47,6 +46,22 @@ export interface BookmarkDashboardLabels {
   confirmDelete: string;
   actionMessages: Record<BookmarkActionCode, string>;
   categoryColors: Record<CategoryColorId, string>;
+  sortBy: string;
+  sortOrder: string;
+  sortCreatedAt: string;
+  sortTitle: string;
+  sortUrl: string;
+  sortAsc: string;
+  sortDesc: string;
+  advancedSort: string;
+  advancedSortLabel: string;
+  localSort: string;
+  hide: string;
+  page: string;
+  pageSize: string;
+  next: string;
+  previous: string;
+  viewBookmarks: string;
 }
 
 export type PanelMode =

@@ -26,9 +26,20 @@ export interface Bookmark {
   updatedAt: string;
 }
 
+export interface PaginationMetadata {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface BookmarkFilters {
   query?: string;
   categoryId?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: 'createdAt' | 'title' | 'url';
+  sortOrder?: 'asc' | 'desc';
 }
 
 export type BookmarkActionCode =
@@ -67,4 +78,5 @@ export interface BookmarkDashboardData {
   categoryTree: CategoryTreeNode[];
   selectedCategoryIds: string[];
   dbReady: boolean;
+  pagination: PaginationMetadata;
 }

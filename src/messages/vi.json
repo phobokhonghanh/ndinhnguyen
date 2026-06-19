@@ -67,7 +67,6 @@
   "bookmarks": {
     "meta_title": "Bookmarks — Nguyen Dinh Nguyen",
     "meta_description": "Dashboard lưu, tìm kiếm, lọc và quản lý bookmark theo danh mục nhiều cấp.",
-    "title": "Quản lý bookmark",
     "subtitle": "Lưu các liên kết hữu ích với tiêu đề, mô tả và danh mục nhiều cấp. Tìm kiếm nhanh, lọc theo chủ đề và quản lý trong một dashboard gọn gàng.",
     "login_title": "Đăng nhập bookmarks",
     "login_subtitle": "Nhập token quản trị trước khi tải dữ liệu bookmark.",
@@ -123,6 +122,22 @@
     "action_title_required": "Tiêu đề là bắt buộc.",
     "action_url_invalid": "Hãy nhập URL http hoặc https hợp lệ.",
     "action_db_unavailable": "Chưa kết nối được API bookmark.",
-    "action_unknown_error": "Có lỗi xảy ra khi lưu dữ liệu."
+    "action_unknown_error": "Có lỗi xảy ra khi lưu dữ liệu.",
+    "sortBy": "Sắp xếp theo",
+    "sortOrder": "Thứ tự",
+    "sort_createdAt": "Ngày tạo",
+    "sort_title": "Tiêu đề",
+    "sort_url": "URL",
+    "sort_asc": "Tăng dần",
+    "sort_desc": "Giảm dần",
+    "advancedSort": "Nâng cao",
+    "advancedSortLabel": "Sắp xếp API",
+    "localSort": "Sắp xếp trang:",
+    "hide": "Ẩn",
+    "page": "Trang",
+    "pageSize": "Số mục mỗi trang",
+    "next": "Trang sau",
+    "previous": "Trang trước",
+    "viewBookmarks": "Xem danh sách bookmark thuộc danh mục này"
   }
 }

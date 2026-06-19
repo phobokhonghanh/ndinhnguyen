@@ -2,6 +2,10 @@ import type {
   BookmarkActionCode,
   BookmarkActionResult,
   BookmarkDashboardLoadResult,
+  Category,
+  CategoryTreeNode,
+  Bookmark,
+  PaginationMetadata,
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ?? '';
@@ -56,32 +60,134 @@ const categoryPayload = (formData: FormData) => ({
   parentId: formValue(formData, 'parentId') || null,
 });
 
+function flattenCategoryTree(nodes: CategoryTreeNode[]): Category[] {
+  const result: Category[] = [];
+  const traverse = (node: CategoryTreeNode) => {
+    const flat: Category = {
+      id: node.id,
+      name: node.name,
+      slug: node.slug,
+      color: node.color,
+      parentId: node.parentId,
+      createdAt: node.createdAt,
+    };
+    result.push(flat);
+    if (node.children) {
+      node.children.forEach(traverse);
+    }
+  };
+  nodes.forEach(traverse);
+  return result;
+}
+
 export const loadBookmarkDashboard = async ({
   token,
   query,
   categoryId,
+  page = 1,
+  pageSize = 20,
+  sortBy = 'createdAt',
+  sortOrder = 'desc',
+  skipCategories = false,
 }: {
   token: string;
   query?: string;
   categoryId?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: 'createdAt' | 'title' | 'url';
+  sortOrder?: 'asc' | 'desc';
+  skipCategories?: boolean;
 }): Promise<BookmarkDashboardLoadResult> => {
-  const params = new URLSearchParams();
-  if (query) params.set('q', query);
-  if (categoryId) params.set('categoryId', categoryId);
+  const bookmarksParams = new URLSearchParams();
+  if (query) bookmarksParams.set('q', query);
+  if (categoryId) bookmarksParams.set('categoryId', categoryId);
+  bookmarksParams.set('page', page.toString());
+  bookmarksParams.set('pageSize', pageSize.toString());
+  bookmarksParams.set('sortBy', sortBy);
+  bookmarksParams.set('sortOrder', sortOrder);
 
-  const suffix = params.size > 0 ? `?${params.toString()}` : '';
-  const result = await request<
-    Extract<BookmarkDashboardLoadResult, { ok: true }>['data']
-  >(`/api/bookmarks${suffix}`, token);
+  if (skipCategories) {
+    try {
+      const bookmarksRes = await request<{ bookmarks: Bookmark[]; pagination: PaginationMetadata }>(
+        `/api/bookmarks?${bookmarksParams.toString()}`,
+        token,
+      );
 
-  if (!result.ok || !result.data) {
-    return {
-      ok: false,
-      code: result.code === 'ok' ? 'unknown_error' : result.code,
-    };
+      if (!bookmarksRes.ok || !bookmarksRes.data) {
+        return {
+          ok: false,
+          code: bookmarksRes.code === 'ok' ? 'unknown_error' : bookmarksRes.code,
+        };
+      }
+
+      const { bookmarks, pagination } = bookmarksRes.data;
+
+      return {
+        ok: true,
+        code: 'ok',
+        data: {
+          bookmarks,
+          categories: [],
+          categoryTree: [],
+          selectedCategoryIds: categoryId ? [categoryId] : [],
+          dbReady: true,
+          pagination,
+        },
+      };
+    } catch {
+      return { ok: false, code: 'unknown_error' };
+    }
   }
 
-  return { ok: true, code: 'ok', data: result.data };
+  const categoriesParams = new URLSearchParams();
+  categoriesParams.set('pageSize', '100'); // Fetch all categories to build sidebar/dropdown tree
+
+  try {
+    const [categoriesRes, bookmarksRes] = await Promise.all([
+      request<{ categoryTree: CategoryTreeNode[] }>(
+        `/api/categories?${categoriesParams.toString()}`,
+        token,
+      ),
+      request<{ bookmarks: Bookmark[]; pagination: PaginationMetadata }>(
+        `/api/bookmarks?${bookmarksParams.toString()}`,
+        token,
+      ),
+    ]);
+
+    if (!categoriesRes.ok || !categoriesRes.data) {
+      return {
+        ok: false,
+        code: categoriesRes.code === 'ok' ? 'unknown_error' : categoriesRes.code,
+      };
+    }
+
+    if (!bookmarksRes.ok || !bookmarksRes.data) {
+      return {
+        ok: false,
+        code: bookmarksRes.code === 'ok' ? 'unknown_error' : bookmarksRes.code,
+      };
+    }
+
+    const categoryTree = categoriesRes.data.categoryTree;
+    const { bookmarks, pagination } = bookmarksRes.data;
+    const categories = flattenCategoryTree(categoryTree);
+
+    return {
+      ok: true,
+      code: 'ok',
+      data: {
+        bookmarks,
+        categories,
+        categoryTree,
+        selectedCategoryIds: categoryId ? [categoryId] : [],
+        dbReady: true,
+        pagination,
+      },
+    };
+  } catch {
+    return { ok: false, code: 'unknown_error' };
+  }
 };
 
 const mutate = async (

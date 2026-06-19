@@ -45,7 +45,6 @@ export default async function BookmarksPage({
   return (
     <BookmarkDashboard
       labels={{
-        title: t('title'),
         subtitle: t('subtitle'),
         loginTitle: t('login_title'),
         loginSubtitle: t('login_subtitle'),
@@ -84,6 +83,22 @@ export default async function BookmarksPage({
         bookmarkCategory: t('bookmark_category'),
         descriptionOptional: t('description_optional'),
         confirmDelete: t('confirm_delete'),
+        sortBy: t('sortBy'),
+        sortOrder: t('sortOrder'),
+        sortCreatedAt: t('sort_createdAt'),
+        sortTitle: t('sort_title'),
+        sortUrl: t('sort_url'),
+        sortAsc: t('sort_asc'),
+        sortDesc: t('sort_desc'),
+        advancedSort: t('advancedSort'),
+        advancedSortLabel: t('advancedSortLabel'),
+        localSort: t('localSort'),
+        hide: t('hide'),
+        page: t('page'),
+        pageSize: t('pageSize'),
+        next: t('next'),
+        previous: t('previous'),
+        viewBookmarks: t('viewBookmarks'),
         actionMessages: Object.fromEntries(
           actionCodes.map((code) => [code, t(`action_${code}`)]),
         ) as Record<BookmarkActionCode, string>,

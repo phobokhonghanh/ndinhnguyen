@@ -75,7 +75,6 @@
   "bookmarks": {
     "meta_title": "Bookmarks — Nguyen Dinh Nguyen",
     "meta_description": "A dashboard for saving, searching, filtering, and managing bookmarks by nested categories.",
-    "title": "Bookmark Dashboard",
     "subtitle": "Save useful links with titles, descriptions, and nested categories. Search fast, filter by topic, and manage everything from one focused workspace.",
     "login_title": "Sign in to bookmarks",
     "login_subtitle": "Enter the admin token before loading bookmark data.",
@@ -131,6 +130,22 @@
     "action_title_required": "Title is required.",
     "action_url_invalid": "Enter a valid http or https URL.",
     "action_db_unavailable": "The bookmark API is not available.",
-    "action_unknown_error": "Something went wrong while saving."
+    "action_unknown_error": "Something went wrong while saving.",
+    "sortBy": "Sort by",
+    "sortOrder": "Order",
+    "sort_createdAt": "Date Created",
+    "sort_title": "Title",
+    "sort_url": "URL",
+    "sort_asc": "Ascending",
+    "sort_desc": "Descending",
+    "advancedSort": "Advanced",
+    "advancedSortLabel": "Advanced Sort",
+    "localSort": "Local Sort:",
+    "hide": "Hide",
+    "page": "Page",
+    "pageSize": "Items per page",
+    "next": "Next",
+    "previous": "Previous",
+    "viewBookmarks": "View bookmarks of this category"
   }
 }
