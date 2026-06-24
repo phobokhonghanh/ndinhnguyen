@@ -19,7 +19,8 @@
     "homelab_desc": "Here are a few random things about prod & infra self-host...",
     "hero_tagline": "Developer - Data Engineer",
     "hero_description": "I build scalable backend systems and high-performance data pipelines — from architecture design to production deployment.",
-    "skills_title": "Skills & Technologies"
+    "skills_title": "Skills & Technologies",
+    "cashback": "Cashback"
   },
   "locales": {
     "en": "English",
@@ -147,5 +148,29 @@
     "next": "Next",
     "previous": "Previous",
     "viewBookmarks": "View bookmarks of this category"
+  },
+  "cashback": {
+    "meta_title": "Cashback — Nguyen Dinh Nguyen",
+    "meta_description": "Unlimited cashback on shopping",
+    "title": "Cashback",
+    "subtitle": "Unlimited cashback when shopping on Shopee",
+    "input_placeholder": "Enter product URL (Shopee...)",
+    "invalid_link": "Invalid URL. Please enter a URL from Shopee.",
+    "btn_search": "Search product",
+    "btn_searching": "Searching...",
+    "btn_copy": "Copy link",
+    "btn_copied": "Copied!",
+    "btn_buy": "Buy Now",
+    "product_name": "Product Name",
+    "shop_name": "Shop",
+    "price": "Price",
+    "sales": "Sales",
+    "rating": "Rating",
+    "commission": "Commission",
+    "last_update": "Last updated",
+    "not_found": "Product not found",
+    "history_title": "Search History",
+    "history_empty": "No items yet.",
+    "history_clear": "Clear History"
   }
 }

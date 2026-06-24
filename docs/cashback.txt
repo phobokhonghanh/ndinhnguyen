@@ -1,0 +1,28 @@
+trang cashback
+    - màu chủ đạo là màu cam
+    - kế thừa, sử dụng shadcn/ui components đã có sẵn
+    - không ảnh hưởng đến code cũ
+    - đa ngôn ngữ
+    - đổi theme
+    - dựa trên docs
+        + http://localhost:8787/docs#/default/create_shopee_affiliate_api_shopee_affiliate_post
+        + http://localhost:8787/openapi.json 
+    - có 1 ô input để nhập url của sản phẩm shopee
+    - có 1 button search để tìm kiếm sản phẩm
+    - có 1 button copy để copy url 
+    - có 1 button Mua ngay để chuyển hướng url đến trang shopee(affiliate_link)
+    - sau khi search thì hiển thị thông tin sản phẩm qua các field sau:
+        + product_name
+        + shop_name
+        + price
+        + sales
+        + imageUrl
+        + rating
+        + commission
+        + lastUpdate
+    - Hiển thị thông báo nếu khong tìm thấy thông tin sản phẩm
+    - Giao diện phải đẹp, sang trọng và chuyên nghiệp, dễ sử dụng
+    - Tối ưu UI/UX cho mobile
+    - Hiển thị lịch sử 5 sản phẩm gần nhất bên phải bằng cách sử dụng local storage
+
+    

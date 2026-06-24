@@ -1,0 +1,139 @@
+/* === Affiliate Page Theme Variables === */
+.affiliate-page-container {
+  --aff-orange: #ff5722;
+  --aff-orange-hover: #f4511e;
+  --aff-orange-glow: rgba(255, 87, 34, 0.15);
+  --aff-orange-border: rgba(255, 87, 34, 0.25);
+  --aff-bg: oklch(98.5% 0.005 30deg);
+  --aff-surface: oklch(100% 0 0deg);
+  --aff-border: oklch(92% 0.01 30deg);
+  --aff-text: oklch(20% 0.015 30deg);
+  --aff-heading: oklch(12% 0.02 30deg);
+  --aff-muted: oklch(48% 0.015 30deg);
+  --aff-card-shadow:
+    0 4px 20px -2px rgba(255, 87, 34, 0.05), 0 2px 8px -1px rgba(0, 0, 0, 0.03);
+  --aff-history-item-hover: oklch(97% 0.006 30deg);
+
+  background-color: var(--aff-bg);
+  color: var(--aff-text);
+  min-h: 100vh;
+}
+
+.dark .affiliate-page-container {
+  --aff-bg: oklch(15% 0.008 30deg);
+  --aff-surface: oklch(19% 0.012 30deg / 85%);
+  --aff-border: oklch(28% 0.015 30deg / 70%);
+  --aff-text: oklch(86% 0.008 30deg);
+  --aff-heading: oklch(95% 0.003 30deg);
+  --aff-muted: oklch(65% 0.008 30deg);
+  --aff-card-shadow:
+    0 4px 24px -2px rgba(0, 0, 0, 0.3), 0 2px 10px -1px rgba(255, 87, 34, 0.03);
+  --aff-history-item-hover: oklch(23% 0.015 30deg / 80%);
+}
+
+/* === Custom Classes === */
+.aff-gradient-text {
+  background: linear-gradient(135deg, var(--aff-orange), #ff8a50);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.aff-card {
+  background-color: var(--aff-surface);
+  border: 1px solid var(--aff-border);
+  box-shadow: var(--aff-card-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aff-card:hover {
+  border-color: var(--aff-orange-border);
+  box-shadow:
+    0 10px 30px -5px rgba(255, 87, 34, 0.08),
+    0 4px 12px -2px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.aff-input {
+  background-color: var(--aff-surface);
+  border: 2px solid var(--aff-border);
+  color: var(--aff-text);
+  transition: all 0.2s ease-in-out;
+}
+
+.aff-input:focus {
+  border-color: var(--aff-orange);
+  box-shadow: 0 0 0 4px var(--aff-orange-glow);
+  outline: none;
+}
+
+.aff-btn-primary {
+  background: linear-gradient(135deg, var(--aff-orange), #ff7337);
+  color: #ffffff;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.2);
+}
+
+.aff-btn-primary:hover {
+  background: linear-gradient(135deg, var(--aff-orange-hover), #ff5722);
+  box-shadow: 0 6px 16px rgba(255, 87, 34, 0.3);
+  transform: translateY(-1px);
+}
+
+.aff-btn-primary:active {
+  transform: translateY(0);
+}
+
+.aff-btn-secondary {
+  background-color: var(--aff-surface);
+  border: 1px solid var(--aff-border);
+  color: var(--aff-text);
+  transition: all 0.2s ease-in-out;
+}
+
+.aff-btn-secondary:hover {
+  border-color: var(--aff-orange-border);
+  background-color: var(--aff-orange-light);
+  color: var(--aff-orange);
+}
+
+.aff-badge-commission {
+  background-color: var(--aff-orange-light);
+  border: 1px solid var(--aff-orange-border);
+  color: var(--aff-orange);
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.aff-history-item {
+  border-bottom: 1px solid var(--aff-border);
+  transition: background-color 0.2s ease;
+}
+
+.aff-history-item:hover {
+  background-color: var(--aff-history-item-hover);
+}
+
+.aff-history-item:last-child {
+  border-bottom: none;
+}
+
+/* Skeleton Loading Animation */
+@keyframes aff-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.aff-skeleton {
+  animation: aff-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: var(--aff-border);
+}

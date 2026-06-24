@@ -45,6 +45,9 @@ export function Footer() {
             <Button variant="ghost" size="sm" asChild>
               <Link href="/experience">/exp</Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/cashback">/cashback</Link>
+            </Button>
           </div>
         </nav>
         <div className="flex items-center gap-2">

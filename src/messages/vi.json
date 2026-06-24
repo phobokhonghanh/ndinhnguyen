@@ -11,7 +11,8 @@
     "experience_desc": "Ở đây có một vài thông tin về kinh nghiệm của mình với số năm ít ỏi khi đi làm \"culi\".",
     "bookmarks": "Bookmark",
     "homelab": "Homelab",
-    "homelab_desc": "Ở đây có vài thứ linh tinh về các dự án & hạ tầng self-host..."
+    "homelab_desc": "Ở đây có vài thứ linh tinh về các dự án & hạ tầng self-host...",
+    "cashback": "Cashback"
   },
   "locales": {
     "en": "English",
@@ -139,5 +140,29 @@
     "next": "Trang sau",
     "previous": "Trang trước",
     "viewBookmarks": "Xem danh sách bookmark thuộc danh mục này"
+  },
+  "cashback": {
+    "meta_title": "Hoàn tiền — Nguyễn Đình Nguyên",
+    "meta_description": "Hoàn tiền không giới hạn khi mua hàng",
+    "title": "Hoàn Tiền",
+    "subtitle": "Hoàn tiền không giới hạn khi mua hàng trên Shopee",
+    "input_placeholder": "Nhập URL sản phẩm (Shopee...)",
+    "invalid_link": "URL không hợp lệ. Vui lòng nhập url từ trang Shopee.",
+    "btn_search": "Tìm sản phẩm",
+    "btn_searching": "Đang tìm...",
+    "btn_copy": "Sao chép link",
+    "btn_copied": "Đã sao chép!",
+    "btn_buy": "Mua ngay",
+    "product_name": "Tên sản phẩm",
+    "shop_name": "Cửa hàng",
+    "price": "Giá",
+    "sales": "Đã bán",
+    "rating": "Đánh giá",
+    "commission": "Hoa hồng",
+    "last_update": "Cập nhật lần cuối",
+    "not_found": "Không tìm thấy sản phẩm",
+    "history_title": "Lịch sử tìm kiếm",
+    "history_empty": "Chưa có sản phẩm nào.",
+    "history_clear": "Xoá lịch sử"
   }
 }
