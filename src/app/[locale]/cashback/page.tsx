@@ -1,6 +1,11 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
 import { NavBar } from '@/components/features/cashback/NavBar';
-import { CashbackDashboard } from '@/components/features/cashback/CashbackDashboard';
+import CashbackDashboardWrapper from '@/components/features/cashback/CashbackDashboardWrapper';
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export async function generateMetadata({
   params,
@@ -30,7 +35,7 @@ export default async function CashbackPage({
       <NavBar />
 
       {/* Main Cashback Portal Content */}
-      <CashbackDashboard />
+      <CashbackDashboardWrapper />
     </main>
   );
 }

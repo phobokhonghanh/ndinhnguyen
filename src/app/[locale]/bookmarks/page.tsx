@@ -1,5 +1,10 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
 import { BookmarkDashboard } from '@/components/features/bookmarks/BookmarkDashboard';
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 import { CATEGORY_COLOR_PRESETS } from '@/lib/bookmarks/colors';
 import type { BookmarkActionCode } from '@/lib/bookmarks/types';
 

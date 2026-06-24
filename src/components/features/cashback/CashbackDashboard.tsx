@@ -13,31 +13,22 @@ import {
   Check,
   Loader2,
   AlertTriangle,
+  RotateCw,
 } from 'lucide-react';
+import { generateCashbackLink } from '@/lib/cashback/api';
+import type { Product, HistoryItem } from '@/lib/cashback/types';
 import './cashback.css';
 
-interface Product {
-  productName: string;
-  shopName?: string | null;
-  price: number;
-  sales?: number | null;
-  imageUrl?: string | null;
-  rating?: number | Record<string, unknown> | null;
-  commission?: number | null;
-  lastUpdate?: string | null;
-}
 
-interface HistoryItem {
-  url: string;
-  productName: string;
-  imageUrl: string;
-  price: number;
-  commission: number;
-  affiliateLink: string;
-  timestamp: number;
-}
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+// Helper to format Shopee image URL
+const formatShopeeImageUrl = (url?: string | null): string => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  return `https://cf.shopee.vn/file/${url}`;
+};
 
 export function CashbackDashboard() {
   const t = useTranslations('cashback');
@@ -55,6 +46,7 @@ export function CashbackDashboard() {
 
   const [copied, setCopied] = React.useState(false);
   const [history, setHistory] = React.useState<HistoryItem[]>([]);
+  const [currentUrl, setCurrentUrl] = React.useState<string | null>(null);
 
   // Load history from local storage on mount
   React.useEffect(() => {
@@ -63,7 +55,45 @@ export function CashbackDashboard() {
       if (stored) {
         const timer = setTimeout(() => {
           try {
-            setHistory(JSON.parse(stored));
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed)) {
+              const migrated = (parsed as Record<string, unknown>[])
+                .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
+                .map((item) => {
+                  const product = item.product as Record<string, unknown> | undefined;
+                  const rawImageUrl = (product?.imageUrl || item.imageUrl || '') as string;
+                  const formattedImageUrl = formatShopeeImageUrl(rawImageUrl);
+
+                  if (product && typeof product === 'object') {
+                    return {
+                      ...item,
+                      product: {
+                        ...product,
+                        imageUrl: formattedImageUrl
+                      }
+                    } as unknown as HistoryItem;
+                  }
+
+                  // Migrate flat history structure to nested product structure
+                  return {
+                    url: (item.url || '') as string,
+                    affiliateLink: (item.affiliateLink || '') as string,
+                    timestamp: (item.timestamp || Date.now()) as number,
+                    product: {
+                      itemId: item.itemId ?? null,
+                      productName: (item.productName || item.title || '') as string,
+                      imageUrl: formattedImageUrl,
+                      price: (item.price || 0) as number,
+                      commission: (item.commission || 0) as number,
+                      rating: item.rating ?? null,
+                      sales: item.sales ?? null,
+                      shopName: item.shopName ?? null,
+                      lastUpdate: item.timestamp ? new Date(item.timestamp as number).toISOString() : new Date().toISOString(),
+                    }
+                  } as HistoryItem;
+                });
+              setHistory(migrated);
+            }
           } catch (e) {
             console.error(e);
           }
@@ -147,24 +177,7 @@ export function CashbackDashboard() {
     setCopied(false);
 
     try {
-      const response = await fetch(`${API_URL}/api/shopee/affiliate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          link: urlToFetch.trim(),
-          affiliate_id: '17314780502',
-          sub_ids: ['ndinhnguyen'],
-          deep_and_deferred: 1,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('API server returned error status');
-      }
-
-      const resData = await response.json();
+      const resData = await generateCashbackLink({ link: urlToFetch });
 
       if (resData && resData.ok && resData.data) {
         const affLink = resData.data.affiliate_link;
@@ -173,23 +186,45 @@ export function CashbackDashboard() {
         setAffiliateLink(affLink);
 
         if (product) {
-          setProductInfo(product);
+          const formattedImageUrl = formatShopeeImageUrl(product.imageUrl);
+
+          const updatedProduct = {
+            ...product,
+            imageUrl: formattedImageUrl
+          };
+
+          setProductInfo(updatedProduct);
+          setCurrentUrl(urlToFetch);
+          setInputUrl(''); // Clear input after search success
 
           // Add to local storage history
           const newItem: HistoryItem = {
             url: urlToFetch.trim(),
-            productName: product.productName,
-            imageUrl: product.imageUrl || '',
-            price: product.price,
-            commission: product.commission || 0,
             affiliateLink: affLink,
             timestamp: Date.now(),
+            product: {
+              itemId: product.itemId || null,
+              productName: product.productName,
+              imageUrl: formattedImageUrl,
+              price: product.price,
+              commission: product.commission || 0,
+              rating: product.rating,
+              sales: product.sales,
+              shopName: product.shopName,
+              lastUpdate: product.lastUpdate || null,
+            }
           };
 
           // Filter out existing and prepend new, limit to 5
+          // Filter based on itemId if present, otherwise fallback to url comparison
           const updatedHistory = [
             newItem,
-            ...history.filter((item) => item.url !== urlToFetch.trim()),
+            ...history.filter((item) => {
+              if (product.itemId && item?.product?.itemId === product.itemId) {
+                return false;
+              }
+              return item.url !== urlToFetch.trim();
+            }),
           ].slice(0, 5);
 
           saveHistory(updatedHistory);
@@ -232,21 +267,16 @@ export function CashbackDashboard() {
 
   // Select item from history
   const handleSelectHistory = (item: HistoryItem) => {
-    setInputUrl(item.url);
+    setInputUrl(''); // Clear input
     setValidationError(null);
     setApiError(null);
-    setProductInfo({
-      productName: item.productName,
-      imageUrl: item.imageUrl,
-      price: item.price,
-      commission: item.commission,
-      lastUpdate: new Date(item.timestamp).toISOString(),
-    });
+    setProductInfo(item.product);
     setAffiliateLink(item.affiliateLink);
+    setCurrentUrl(item.url);
   };
 
   // Format rating helper
-  const formatRating = (rating: any): string => {
+  const formatRating = (rating: unknown): string => {
     if (rating === undefined || rating === null) return '—';
     if (typeof rating === 'number') {
       return rating % 1 === 0 ? rating.toString() : rating.toFixed(1);
@@ -259,9 +289,10 @@ export function CashbackDashboard() {
       return rating;
     }
     if (typeof rating === 'object') {
-      const star = rating.ratingStar ?? rating.rating_star ?? rating.star;
+      const ratingObj = rating as Record<string, unknown>;
+      const star = ratingObj.ratingStar ?? ratingObj.rating_star ?? ratingObj.star;
       if (star !== undefined && star !== null) {
-        const num = typeof star === 'number' ? star : parseFloat(star);
+        const num = typeof star === 'number' ? star : parseFloat(star as string);
         if (!isNaN(num)) {
           return num % 1 === 0 ? num.toString() : num.toFixed(1);
         }
@@ -297,7 +328,7 @@ export function CashbackDashboard() {
         <div className="text-center mb-8 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Shopee Cashback Engine v1</span>
+            <span>Shopee Cashback</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
             <span className="text-[var(--aff-text)]">
@@ -337,7 +368,7 @@ export function CashbackDashboard() {
                   <button
                     type="submit"
                     className="aff-btn-primary px-6 py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed select-none text-sm sm:text-base cursor-pointer"
-                    disabled={loading || !!validationError || !inputUrl}
+                    disabled={loading || !!validationError || inputUrl.trim() === ''}
                   >
                     {loading ? (
                       <>
@@ -409,7 +440,7 @@ export function CashbackDashboard() {
                     {productInfo.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={productInfo.imageUrl}
+                        src={formatShopeeImageUrl(productInfo.imageUrl)}
                         alt={productInfo.productName}
                         className="w-full h-full object-contain p-1 transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
@@ -424,9 +455,22 @@ export function CashbackDashboard() {
                   {/* Product Meta */}
                   <div className="flex-1 space-y-4">
                     <div>
-                      <h2 className="text-base sm:text-lg font-bold text-[var(--aff-heading)] line-clamp-2 leading-snug">
-                        {productInfo.productName}
-                      </h2>
+                      <div className="flex justify-between items-start gap-2">
+                        <h2 className="text-base sm:text-lg font-bold text-[var(--aff-heading)] line-clamp-2 leading-snug flex-1">
+                          {productInfo.productName}
+                        </h2>
+                        {currentUrl && (
+                          <button
+                            type="button"
+                            onClick={() => handleGenerate(currentUrl)}
+                            disabled={loading}
+                            className="p-1.5 text-[var(--aff-muted)] hover:text-orange-600 dark:hover:text-orange-500 hover:bg-orange-500/10 rounded-lg transition-all duration-200 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            title="Tải lại sản phẩm"
+                          >
+                            <RotateCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+                          </button>
+                        )}
+                      </div>
                       {productInfo.shopName && (
                         <p className="text-xs sm:text-sm text-[var(--aff-muted)] mt-1">
                           {t('shop_name')}:{' '}
@@ -511,6 +555,15 @@ export function CashbackDashboard() {
                 {/* Call To Actions */}
                 {affiliateLink && (
                   <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-[var(--aff-border)]">
+                    <a
+                      href={affiliateLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="aff-btn-primary py-3 px-6 rounded-xl flex items-center justify-center gap-2 font-bold text-sm sm:text-base select-none cursor-pointer flex-[2]"
+                    >
+                      <span>{t('btn_buy')}</span>
+                      <ExternalLink className="w-4.5 h-4.5" />
+                    </a>
                     <button
                       onClick={handleCopy}
                       className="aff-btn-secondary py-3 px-5 rounded-xl flex items-center justify-center gap-2 flex-1 font-bold text-sm sm:text-base select-none cursor-pointer"
@@ -529,16 +582,6 @@ export function CashbackDashboard() {
                         </>
                       )}
                     </button>
-
-                    <a
-                      href={affiliateLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="aff-btn-primary py-3 px-6 rounded-xl flex items-center justify-center gap-2 font-bold text-sm sm:text-base select-none cursor-pointer"
-                    >
-                      <span>{t('btn_buy')}</span>
-                      <ExternalLink className="w-4.5 h-4.5" />
-                    </a>
                   </div>
                 )}
               </div>
@@ -580,10 +623,10 @@ export function CashbackDashboard() {
                     >
                       {/* Image Thumbnail */}
                       <div className="w-12 h-12 rounded-lg border border-[var(--aff-border)] bg-white overflow-hidden flex-shrink-0 flex items-center justify-center">
-                        {item.imageUrl ? (
+                        {item.product?.imageUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
-                            src={item.imageUrl}
+                            src={formatShopeeImageUrl(item.product.imageUrl)}
                             alt=""
                             className="w-full h-full object-contain p-0.5"
                             loading="lazy"
@@ -596,15 +639,15 @@ export function CashbackDashboard() {
                       {/* Text info */}
                       <div className="flex-1 min-w-0">
                         <h4 className="text-xs font-bold text-[var(--aff-heading)] truncate leading-normal">
-                          {item.productName}
+                          {item.product?.productName || ''}
                         </h4>
                         <div className="flex justify-between items-center mt-1">
                           <span className="text-xs font-semibold text-orange-600 dark:text-orange-500">
-                            {formatPrice(item.price)}
+                            {item.product ? formatPrice(item.product.price) : '—'}
                           </span>
                           <span className="text-[10px] bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold px-1.5 py-0.5 rounded-full">
-                            {item.commission
-                              ? formatPrice(item.commission)
+                            {item.product?.commission
+                              ? formatPrice(item.product.commission)
                               : '—'}
                           </span>
                         </div>

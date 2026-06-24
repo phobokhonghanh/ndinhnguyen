@@ -1,5 +1,10 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
 import { NavBar } from '@/components/features/experience/NavBar';
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 import { HeroSection } from '@/components/features/experience/HeroSection';
 import { TechStackSection } from '@/components/features/experience/TechStackSection';
 import { ExperienceSection } from '@/components/features/experience/ExperienceSection';
