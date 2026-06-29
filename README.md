@@ -10,9 +10,12 @@
 
 | Route                   | Type                     | Description                                                                                  |
 | ----------------------- | ------------------------ | -------------------------------------------------------------------------------------------- |
-| `/`                     | Redirect                 | Redirects to `/en/` on Cloudflare Pages using `_redirects`.                                  |
+| `/`                     | Redirect                 | Redirects to `/en/` via `public/_redirects`, with a client fallback in `src/app/page.tsx`.   |
+| `/bookmarks/`           | Client redirect          | Legacy entry point that sends visitors to `/en/bookmarks`.                                   |
+| `/experience/`          | Client redirect          | Legacy entry point that sends visitors to `/en/experience`.                                  |
 | `/[locale]/`            | Static page              | Landing page with language switcher, theme toggle, and links to the main sections.           |
 | `/[locale]/bookmarks/`  | Static page + client API | Bookmark dashboard shell; the UI loads bookmark data from the Python Worker API after login. |
+| `/[locale]/cashback/`   | Static page              | Cashback portal dashboard with its own navigation and localized metadata.                    |
 | `/[locale]/experience/` | Static page              | Profile and experience page with hero, tech stack, and experience sections.                  |
 
 ---

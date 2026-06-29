@@ -30,14 +30,14 @@ export default async function IndexPage({
   const t = await getTranslations({ locale, namespace: 'common' });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-background transition-colors duration-300">
+    <main className="relative flex min-h-screen flex-col items-center justify-center p-4 sm:p-6 md:p-24 bg-background transition-colors duration-300">
       {/* Quick Settings - Fixed position */}
-      <div className="absolute top-8 right-8 flex items-center gap-4">
+      <div className="absolute top-4 right-4 sm:top-8 sm:right-8 flex items-center gap-4">
         <LanguageSwitcher />
         <ThemeToggle />
       </div>
 
-      <Card className="w-[600px] shadow-2xl border-t-4 border-t-primary animate-in fade-in zoom-in duration-700">
+      <Card className="w-full max-w-[600px] shadow-2xl border-t-4 border-t-primary animate-in fade-in zoom-in duration-700">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
             {t('title')}
